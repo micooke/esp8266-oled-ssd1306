@@ -26,25 +26,23 @@
  * Credits for parts of this code go to Mike Rankin. Thank you so much for sharing!
  */
 
-#ifndef SH1106Spi_h
-#define SH1106Spi_h
+#ifndef OLEDDisplay_enums_h
+#define OLEDDisplay_enums_h
 
-#include "OLEDDisplay_enums.h"
+/*
+typedef enum OLED_MODE { MODE_SPI, MODE_I2C, MODE_BRZO } oled_mode;
+typedef enum OLED_TYPE { TYPE_SSD1306 = 0, TYPE_SH1106 = 2 } oled_type;
+typedef enum OLED_DISPLAYMODE { DISPLAY_NORMAL, DISPLAY_PAGED } oled_displaymode;
+*/
 
-#define OLEDDISPLAY_MODE OLEDDISPLAY_MODE_SPI
-#define OLEDDISPLAY_CHIPSET OLEDDISPLAY_TYPE_SH1106
+#define OLEDDISPLAY_MODE_SPI 0
+#define OLEDDISPLAY_MODE_I2C 1
+#define OLEDDISPLAY_MODE_BRZO 2
 
-#include "OLEDDisplay.h"
-#include "OLEDDisplay_SPI.h"
+#define OLEDDISPLAY_TYPE_SSD1306 0
+#define OLEDDISPLAY_TYPE_SH1106 2
 
-class SH1106Spi : public OLEDDisplay
-{
-  public:
-   SH1106Spi(int8_t _rst, uint8_t _dc)
-   {
-      this->_rst = _rst;
-      this->_dc  = _dc;
-   }
-};
+#define OLEDDISPLAY_DISPLAY_NORMAL 0
+#define OLEDDISPLAY_DISPLAY_PAGED 1
 
 #endif

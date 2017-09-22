@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2016 by Daniel Eichhorn
  * Copyright (c) 2016 by Fabrice Weinberg
+ * Copyright (c) 2017 by Mark Cooke
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,10 +28,10 @@
 
 #ifndef SSD1306_h
 #define SSD1306_h
+
 #include "SSD1306Wire.h"
 
 // For legacy support make SSD1306 an alias for SSD1306
 typedef SSD1306Wire SSD1306;
-
 
 #endif

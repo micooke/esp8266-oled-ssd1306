@@ -58,56 +58,56 @@
  // SH1106Brzo  display(0x3c, D3, D5);
 
  // Initialize the OLED display using Wire library
- SSD1306  display(0x3c, D3, D5);
- // SH1106 display(0x3c, D3, D5);
+ SSD1306  display(0x3c, 3, 5);
+ // SH1106 display(0x3c, 3, 5);
 
 // Adapted from Adafruit_SSD1306
 void drawLines() {
-  for (int16_t i=0; i<DISPLAY_WIDTH; i+=4) {
-    display.drawLine(0, 0, i, DISPLAY_HEIGHT-1);
+  for (int16_t i=0; i<display.getDisplayWidth(); i+=4) {
+    display.drawLine(0, 0, i, display.getDisplayHeight()-1);
     display.display();
     delay(10);
   }
-  for (int16_t i=0; i<DISPLAY_HEIGHT; i+=4) {
-    display.drawLine(0, 0, DISPLAY_WIDTH-1, i);
-    display.display();
-    delay(10);
-  }
-  delay(250);
-
-  display.clear();
-  for (int16_t i=0; i<DISPLAY_WIDTH; i+=4) {
-    display.drawLine(0, DISPLAY_HEIGHT-1, i, 0);
-    display.display();
-    delay(10);
-  }
-  for (int16_t i=DISPLAY_HEIGHT-1; i>=0; i-=4) {
-    display.drawLine(0, DISPLAY_HEIGHT-1, DISPLAY_WIDTH-1, i);
+  for (int16_t i=0; i<display.getDisplayHeight(); i+=4) {
+    display.drawLine(0, 0, display.getDisplayWidth()-1, i);
     display.display();
     delay(10);
   }
   delay(250);
 
   display.clear();
-  for (int16_t i=DISPLAY_WIDTH-1; i>=0; i-=4) {
-    display.drawLine(DISPLAY_WIDTH-1, DISPLAY_HEIGHT-1, i, 0);
+  for (int16_t i=0; i<display.getDisplayWidth(); i+=4) {
+    display.drawLine(0, display.getDisplayHeight()-1, i, 0);
     display.display();
     delay(10);
   }
-  for (int16_t i=DISPLAY_HEIGHT-1; i>=0; i-=4) {
-    display.drawLine(DISPLAY_WIDTH-1, DISPLAY_HEIGHT-1, 0, i);
+  for (int16_t i=display.getDisplayHeight()-1; i>=0; i-=4) {
+    display.drawLine(0, display.getDisplayHeight()-1, display.getDisplayWidth()-1, i);
+    display.display();
+    delay(10);
+  }
+  delay(250);
+
+  display.clear();
+  for (int16_t i=display.getDisplayWidth()-1; i>=0; i-=4) {
+    display.drawLine(display.getDisplayWidth()-1, display.getDisplayHeight()-1, i, 0);
+    display.display();
+    delay(10);
+  }
+  for (int16_t i=display.getDisplayHeight()-1; i>=0; i-=4) {
+    display.drawLine(display.getDisplayWidth()-1, display.getDisplayHeight()-1, 0, i);
     display.display();
     delay(10);
   }
   delay(250);
   display.clear();
-  for (int16_t i=0; i<DISPLAY_HEIGHT; i+=4) {
-    display.drawLine(DISPLAY_WIDTH-1, 0, 0, i);
+  for (int16_t i=0; i<display.getDisplayHeight(); i+=4) {
+    display.drawLine(display.getDisplayWidth()-1, 0, 0, i);
     display.display();
     delay(10);
   }
-  for (int16_t i=0; i<DISPLAY_WIDTH; i+=4) {
-    display.drawLine(DISPLAY_WIDTH-1, 0, i, DISPLAY_HEIGHT-1);
+  for (int16_t i=0; i<display.getDisplayWidth(); i+=4) {
+    display.drawLine(display.getDisplayWidth()-1, 0, i, display.getDisplayHeight()-1);
     display.display();
     delay(10);
   }
@@ -116,8 +116,8 @@ void drawLines() {
 
 // Adapted from Adafruit_SSD1306
 void drawRect(void) {
-  for (int16_t i=0; i<DISPLAY_HEIGHT/2; i+=2) {
-    display.drawRect(i, i, DISPLAY_WIDTH-2*i, DISPLAY_HEIGHT-2*i);
+  for (int16_t i=0; i<display.getDisplayHeight()/2; i+=2) {
+    display.drawRect(i, i, display.getDisplayWidth()-2*i, display.getDisplayHeight()-2*i);
     display.display();
     delay(10);
   }
@@ -126,9 +126,9 @@ void drawRect(void) {
 // Adapted from Adafruit_SSD1306
 void fillRect(void) {
   uint8_t color = 1;
-  for (int16_t i=0; i<DISPLAY_HEIGHT/2; i+=3) {
+  for (int16_t i=0; i<display.getDisplayHeight()/2; i+=3) {
     display.setColor((color % 2 == 0) ? BLACK : WHITE); // alternate colors
-    display.fillRect(i, i, DISPLAY_WIDTH - i*2, DISPLAY_HEIGHT - i*2);
+    display.fillRect(i, i, display.getDisplayWidth() - i*2, display.getDisplayHeight() - i*2);
     display.display();
     delay(10);
     color++;
@@ -139,8 +139,8 @@ void fillRect(void) {
 
 // Adapted from Adafruit_SSD1306
 void drawCircle(void) {
-  for (int16_t i=0; i<DISPLAY_HEIGHT; i+=2) {
-    display.drawCircle(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, i);
+  for (int16_t i=0; i<display.getDisplayHeight(); i+=2) {
+    display.drawCircle(display.getDisplayWidth()/2, display.getDisplayHeight()/2, i);
     display.display();
     delay(10);
   }
@@ -153,16 +153,16 @@ void drawCircle(void) {
   //  ------|-----
   //   0100 | 1000
   //
-  display.drawCircleQuads(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, DISPLAY_HEIGHT/4, 0b00000001);
+  display.drawCircleQuads(display.getDisplayWidth()/2, display.getDisplayHeight()/2, display.getDisplayHeight()/4, 0b00000001);
   display.display();
   delay(200);
-  display.drawCircleQuads(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, DISPLAY_HEIGHT/4, 0b00000011);
+  display.drawCircleQuads(display.getDisplayWidth()/2, display.getDisplayHeight()/2, display.getDisplayHeight()/4, 0b00000011);
   display.display();
   delay(200);
-  display.drawCircleQuads(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, DISPLAY_HEIGHT/4, 0b00000111);
+  display.drawCircleQuads(display.getDisplayWidth()/2, display.getDisplayHeight()/2, display.getDisplayHeight()/4, 0b00000111);
   display.display();
   delay(200);
-  display.drawCircleQuads(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, DISPLAY_HEIGHT/4, 0b00001111);
+  display.drawCircleQuads(display.getDisplayWidth()/2, display.getDisplayHeight()/2, display.getDisplayHeight()/4, 0b00001111);
   display.display();
 }
 

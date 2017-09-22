@@ -1,10 +1,8 @@
-esp8266-oled-ssd1306 [![Build Status](https://travis-ci.org/squix78/esp8266-oled-ssd1306.svg?branch=dev-branch-3.0.0)](https://travis-ci.org/squix78/esp8266-oled-ssd1306)
+Squix78 OLED library 
 ============
 
-> We just released version 3.0.0. Please have a look at our [upgrade guide](UPGRADE-3.0.md)
-
-This is a driver for the SSD1306 based 128x64 pixel OLED display running on the Arduino/ESP8266 platform.
-Can be used with either the I2C or SPI version of the display
+This is a driver for SSD1306 and SH1106 based OLED displays running on the Arduino platform.
+Can be used with either the SPI or I2C (or I2C using BRZO) version of the display.
 
 You can either download this library as a zip file and unpack it to your Arduino/libraries folder or (once it has been added) choose it from the Arduino library manager.
 
@@ -15,6 +13,9 @@ platformio lib install 562
 
 ## Credits
 This library has initially been written by Daniel Eichhorn (@squix78). Many thanks go to Fabrice Weinberg (@FWeinb) for optimizing and refactoring many aspects of the library. Also many thanks to the many committers who helped to add new features and who fixed many bugs.
+
+Mark Cooke (@micooke) added the display sequences for any display size, refactored the code and consolidated communications and display functions.
+
 The init sequence for the SSD1306 was inspired by Adafruit's library for the same display.
 
 ## Usage
@@ -121,8 +122,14 @@ void reconnect(void);
 // Turn the display on
 void displayOn(void);
 
-// Turn the display offs
+// Turn the display off
 void displayOff(void);
+
+// Turn the display & charge pump on
+void wake(void);
+
+// Turn the display & charge pump off
+void sleep(void);
 
 // Clear the local pixel buffer
 void clear(void);

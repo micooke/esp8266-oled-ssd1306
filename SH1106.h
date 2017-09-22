@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2016 by Daniel Eichhorn
  * Copyright (c) 2016 by Fabrice Weinberg
+ * Copyright (c) 2017 by Mark Cooke
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,10 +28,10 @@
 
 #ifndef SH1106_h
 #define SH1106_h
+
 #include "SH1106Wire.h"
 
 // For make SH1106 an alias for SH1106Wire
 typedef SH1106Wire SH1106;
-
 
 #endif

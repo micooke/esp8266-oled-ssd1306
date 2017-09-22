@@ -26,25 +26,54 @@
  * Credits for parts of this code go to Mike Rankin. Thank you so much for sharing!
  */
 
-#ifndef SH1106Spi_h
-#define SH1106Spi_h
-
-#include "OLEDDisplay_enums.h"
-
-#define OLEDDISPLAY_MODE OLEDDISPLAY_MODE_SPI
-#define OLEDDISPLAY_CHIPSET OLEDDISPLAY_TYPE_SH1106
+#ifndef OLEDDisplay_I2C
+#define OLEDDisplay_I2C
 
 #include "OLEDDisplay.h"
-#include "OLEDDisplay_SPI.h"
+#include <Wire.h>
 
-class SH1106Spi : public OLEDDisplay
+void OLEDDisplay::rawDataWrite(uint8_t data) { Wire.write(data); }
+void OLEDDisplay::startDataWrite() { Wire.beginTransmission(_address); }
+void OLEDDisplay::endDataWrite() { Wire.endTransmission(); }
+
+bool OLEDDisplay::connect(uint32_t baudrate)
 {
-  public:
-   SH1106Spi(int8_t _rst, uint8_t _dc)
-   {
-      this->_rst = _rst;
-      this->_dc  = _dc;
-   }
-};
+  Wire.begin();
+  // Let's use ~700khz if ESP8266 is in 160Mhz mode
+  // this will be limited to ~400khz if the ESP8266 in 80Mhz mode.
+  Wire.setClock(baudrate);
+  return true;
+}
+
+void OLEDDisplay::sendCommand(uint8_t command)
+{
+  Wire.beginTransmission(_address);
+  //Wire.write(0x80); // not 0x00?
+  Wire.write((uint8_t)0x00); // not 0x00?
+  Wire.write(command);
+  Wire.endTransmission();
+}
+
+void OLEDDisplay::sendData(uint8_t data, uint16_t len)
+{
+  Wire.beginTransmission(_address);
+  Wire.write(0x40);
+  for (uint16_t i=0; i<len; ++i)
+  {
+    Wire.write(data);
+  }
+  Wire.endTransmission();
+}
+
+void OLEDDisplay::sendData(uint8_t * data, uint16_t startIdx, uint16_t len)
+{
+  Wire.beginTransmission(_address);
+  Wire.write(0x40);
+  for (uint16_t i=startIdx; i<startIdx+len; ++i)
+  {
+    Wire.write(data[i]);
+  }
+  Wire.endTransmission();
+}
 
 #endif
