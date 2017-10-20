@@ -312,6 +312,8 @@ class OLEDDisplay : public Print
    // Connect to the display
    bool connect(uint32_t baudrate = 700000);
 
+   void i2cScan();
+
    // Send all the init commands
    void sendInitCommands();
 
@@ -1177,7 +1179,7 @@ void OLEDDisplay::sendInitCommands(void)
    #endif
    sendCommand(DISPLAYOFF);
    sendCommand(SETDISPLAYCLOCKDIV);
-   sendCommand(0xF0);  // Increase speed of the display max ~96Hz (normally 0x80)
+   sendCommand(0x80); // sendCommand(0xF0);  // Increase speed of the display max ~96Hz (normally 0x80)
    sendCommand(SETMULTIPLEX);
    sendCommand(_display_height - 1);
    sendCommand(SETDISPLAYOFFSET);
@@ -1448,7 +1450,7 @@ void OLEDDisplay::displayNormal(uint8_t minBoundX, uint8_t maxBoundX, uint8_t mi
    sendCommand(0x0);
    sendCommand((_display_height / 8) - 1);
 
-   #if(OLEDDISPLAY_MODE == 0)
+   #if(OLEDDISPLAY_MODE == OLEDDISPLAY_MODE_SPI)
    sendData(buffer, 0, _display_buffer_size);
    #else  // I2C or BRZO
    for (uint16_t i = 0; i < _display_buffer_size; i += TRANSFER_BLOCK_SIZE)

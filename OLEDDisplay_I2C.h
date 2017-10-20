@@ -30,50 +30,82 @@
 #define OLEDDisplay_I2C
 
 #include "OLEDDisplay.h"
-#include <Wire.h>
 
-void OLEDDisplay::rawDataWrite(uint8_t data) { Wire.write(data); }
-void OLEDDisplay::startDataWrite() { Wire.beginTransmission(_address); }
-void OLEDDisplay::endDataWrite() { Wire.endTransmission(); }
+#ifdef squix78_OLED_SoftwareI2C
+#include <SoftwareI2C.h>
+SoftwareI2C squix78_OLED_Wire;
+#else
+#include <Wire.h>
+#define squix78_OLED_Wire Wire
+#endif
+
+void OLEDDisplay::rawDataWrite(uint8_t data) { squix78_OLED_Wire.write(data); }
+void OLEDDisplay::startDataWrite() { squix78_OLED_Wire.beginTransmission(_address); }
+void OLEDDisplay::endDataWrite() { squix78_OLED_Wire.endTransmission(); }
+
+void OLEDDisplay::i2cScan()
+{
+  for(uint8_t address=1; address<128; ++address)
+  {
+    squix78_OLED_Wire.beginTransmission(address);
+    squix78_OLED_Wire.write((uint8_t)0); // register 0
+    squix78_OLED_Wire.endTransmission();
+    uint8_t device_found = (squix78_OLED_Wire.requestFrom(address, 1) == 1); // read 1 byte of data
+    squix78_OLED_Wire.endTransmission();
+
+    if(device_found)
+    {
+        if ((address == 0x3C) || (address == 0x3D))
+        {
+          _address = address;
+          return;
+        }
+    }
+  }
+  
+  // this should not be needed, but the address defaults to 0x3C if it wasnt found in the scan
+  _address = 0x3C; 
+}
 
 bool OLEDDisplay::connect(uint32_t baudrate)
 {
-  Wire.begin();
+  squix78_OLED_Wire.init(_sda, _scl)
+  squix78_OLED_Wire.begin();
   // Let's use ~700khz if ESP8266 is in 160Mhz mode
   // this will be limited to ~400khz if the ESP8266 in 80Mhz mode.
-  Wire.setClock(baudrate);
+  squix78_OLED_Wire.setClock(baudrate);
   return true;
 }
 
 void OLEDDisplay::sendCommand(uint8_t command)
 {
-  Wire.beginTransmission(_address);
-  //Wire.write(0x80); // not 0x00?
-  Wire.write((uint8_t)0x00); // not 0x00?
-  Wire.write(command);
-  Wire.endTransmission();
+  squix78_OLED_Wire.beginTransmission(_address);
+  //squix78_OLED_Wire.write(0x80); // not 0x00?
+  squix78_OLED_Wire.write((uint8_t)0x00); // Command byte = 0x40
+  squix78_OLED_Wire.write(command);
+  squix78_OLED_Wire.endTransmission();
 }
 
 void OLEDDisplay::sendData(uint8_t data, uint16_t len)
 {
-  Wire.beginTransmission(_address);
-  Wire.write(0x40);
+  squix78_OLED_Wire.beginTransmission(_address);
+  squix78_OLED_Wire.write((uint8_t)0x40); // Data byte = 0x40
   for (uint16_t i=0; i<len; ++i)
   {
-    Wire.write(data);
+    squix78_OLED_Wire.write(data);
   }
-  Wire.endTransmission();
+  squix78_OLED_Wire.endTransmission();
 }
 
 void OLEDDisplay::sendData(uint8_t * data, uint16_t startIdx, uint16_t len)
 {
-  Wire.beginTransmission(_address);
-  Wire.write(0x40);
+  squix78_OLED_Wire.beginTransmission(_address);
+  squix78_OLED_Wire.write((uint8_t)0x40); // Data byte = 0x40
   for (uint16_t i=startIdx; i<startIdx+len; ++i)
   {
-    Wire.write(data[i]);
+    squix78_OLED_Wire.write(data[i]);
   }
-  Wire.endTransmission();
+  squix78_OLED_Wire.endTransmission();
 }
 
 #endif

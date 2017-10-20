@@ -40,12 +40,24 @@
 class SSD1306Wire : public OLEDDisplay
 {
   public:
-   SSD1306Wire(uint8_t _address = 0x3C, uint8_t _sda = 0, uint8_t _scl = 0)
+   SSD1306Wire(uint8_t _address = 0x3C, uint8_t _sda = 0, uint8_t _scl = 1)
    {
       this->_address = _address;
       this->_sda     = _sda;
       this->_scl     = _scl;
    }
+   void getI2CAddress()
+	{
+		connect();
+		i2cScan();
+		Serial.print("0x");
+		if (_i2c_address < 16) Serial.print("0");
+	   Serial.println(_i2c_address, HEX);
+	   #ifdef I2C_DEVICE_LIST_H
+	   String device_name = i2c_device_list(_i2c_address);
+	   Serial.println(device_name.c_str());
+	   #endif
+	}
 };
 
 #endif
