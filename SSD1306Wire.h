@@ -51,10 +51,10 @@ class SSD1306Wire : public OLEDDisplay
 		connect();
 		i2cScan();
 		Serial.print("0x");
-		if (_i2c_address < 16) Serial.print("0");
-	   Serial.println(_i2c_address, HEX);
+		if (_address < 16) Serial.print("0");
+	   Serial.println(_address, HEX);
 	   #ifdef I2C_DEVICE_LIST_H
-	   String device_name = i2c_device_list(_i2c_address);
+	   String device_name = i2c_device_list(_address);
 	   Serial.println(device_name.c_str());
 	   #endif
 	}

@@ -69,7 +69,9 @@ void OLEDDisplay::i2cScan()
 
 bool OLEDDisplay::connect(uint32_t baudrate)
 {
-  squix78_OLED_Wire.init(_sda, _scl)
+  #ifdef squix78_OLED_SoftwareI2C
+  squix78_OLED_Wire.init(_sda, _scl);
+  #endif
   squix78_OLED_Wire.begin();
   // Let's use ~700khz if ESP8266 is in 160Mhz mode
   // this will be limited to ~400khz if the ESP8266 in 80Mhz mode.
