@@ -32,6 +32,7 @@
 #include "OLEDDisplay.h"
 #include <SPI.h>
 
+// Configure SPI settings - Max clk frequency for display is 10MHz
 SPISettings oledSettings(10000000, MSBFIRST, SPI_MODE0);
 
 void OLEDDisplay::rawDataWrite(uint8_t data) { SPI.transfer(data); }
@@ -46,8 +47,11 @@ bool OLEDDisplay::connect(uint32_t baudrate)
     digitalWrite(_rst, HIGH);
   }
   pinMode(_dc, OUTPUT);
-  digitalWrite(_dc, LOW);
   pinMode(_cs, OUTPUT);
+  pinMode(MOSI, OUTPUT);
+  pinMode(SCK, OUTPUT);
+
+  digitalWrite(_dc, LOW);
   digitalWrite(_cs, HIGH);
   
   SPI.begin();
@@ -57,17 +61,16 @@ bool OLEDDisplay::connect(uint32_t baudrate)
     SPI.setClockDivider(2);
   #endif
 
-  #ifdef SH1106Spi_h
-    // Pulse Reset low for 10ms
-    if (_rst >= 0)
-    {
-      digitalWrite(_rst, HIGH);
-      delay(1);
-      digitalWrite(_rst, LOW);
-      delay(10);
-      digitalWrite(_rst, HIGH);
-    }
-  #endif
+  // Display reset routine
+  if (_rst >= 0)
+  {
+    pinMode(_rst, OUTPUT);  // Set RST pin as OUTPUT
+    digitalWrite(_rst, HIGH); // VDD (3.3V) goes high at start
+    delay(5);
+    digitalWrite(_rst, LOW); // Bring RST low, reset the display
+    delay(10); // wait 10ms
+    digitalWrite(_rst, HIGH); // Set RST HIGH, bring out of reset
+  }
 
   return true;
 }

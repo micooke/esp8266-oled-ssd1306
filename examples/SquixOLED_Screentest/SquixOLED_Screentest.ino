@@ -3,18 +3,17 @@
 #ifdef _VARIANT_WAVESHARE_BLE400_
   #include <Wire.h>
   #include "angry_cookie_128x64_xbm.h"
-  #define OLED_WIDTH angry_cookie::width
-  #define OLED_HEIGHT angry_cookie::height
+  #define OLED_WIDTH 128
+  #define OLED_HEIGHT 64
   #include <SSD1306Wire.h>
   SSD1306Wire oled(0x3C);
 #else
   #include <SPI.h>
   #include "angry_cookie_64x32_xbm.h"
-  #define OLED_WIDTH angry_cookie::width
-  #define OLED_HEIGHT angry_cookie::height
-  #define SPI_HAS_TRANSACTION
+  #define OLED_WIDTH 64
+  #define OLED_HEIGHT 32
   #include <SSD1306Spi.h>
-  SSD1306Spi oled(-1, OLED_DC, OLED_CS);
+  SSD1306Spi oled(OLED_RST, OLED_DC, OLED_CS);
 #endif
 
 uint32_t tButton;
@@ -37,18 +36,19 @@ void setup()
   
   oled.setScreenSize(OLED_WIDTH, OLED_HEIGHT);
   oled.init(); 
-
-  //oled.flipScreenVertically();
-  oled.setTextAlignment(TEXT_ALIGN_LEFT);
-  oled.setFont(ArialMT_Plain_10);
   oled.drawXbm(14, 0, angry_cookie::width, angry_cookie::height, angry_cookie::bits);
   oled.display();
+  
+  oled.flipScreenVertically();
+  oled.setTextAlignment(TEXT_ALIGN_LEFT);
+  oled.setFont(ArialMT_Plain_10);
   oled.drawString(0,  0, "github.com/");
   oled.drawString(0, 10, "micooke");
   oled.drawString(0, 20, __TIME__);
   oled.drawRect(0, 0, OLED_WIDTH, OLED_HEIGHT);
+  
   oled.display();
-
+  
   tButton = millis();
 }
 
