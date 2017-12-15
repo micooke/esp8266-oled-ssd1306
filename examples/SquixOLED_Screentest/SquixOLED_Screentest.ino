@@ -1,19 +1,37 @@
 #include <Arduino.h>
+#include <Wire.h>
+#include <SPI.h>
 
-#ifdef _VARIANT_WAVESHARE_BLE400_
-  #include <Wire.h>
-  #include "angry_cookie_128x64_xbm.h"
-  #define OLED_WIDTH 128
-  #define OLED_HEIGHT 64
-  #include <SSD1306Wire.h>
-  SSD1306Wire oled(0x3C);
-#else
-  #include <SPI.h>
+#define SH1107_EXTERNAL_CONTROL
+#if defined(_VARIANT_T28_) | defined(SH1107_EXTERNAL_CONTROL)
+  #define SFEOLED_SH1107
+#endif
+#include <SFE_MicroOLED.h>  // Include the SFE_MicroOLED library
+
+#if defined(SH1107_EXTERNAL_CONTROL)
+  #include "angry_cookie_64x32_xbm.h"
+  #define OLED_WIDTH 64
+  #define OLED_HEIGHT 128
+  #include <SSD1306Spi.h>
+  SSD1306Spi oled(8, 9, 10);
+#elif defined(_VARIANT_T28_)
+  #include "angry_cookie_64x32_xbm.h"
+  #define OLED_WIDTH 64
+  #define OLED_HEIGHT 128
+  #include <SSD1306Spi.h>
+  SSD1306Spi oled(OLED_RST, OLED_DC, OLED_CS);
+#elif defined (_VARIANT_IDO003_) | defined (_VARIANT_ID100HR_) | defined(_VARIANT_ID107HR_)
   #include "angry_cookie_64x32_xbm.h"
   #define OLED_WIDTH 64
   #define OLED_HEIGHT 32
   #include <SSD1306Spi.h>
   SSD1306Spi oled(OLED_RST, OLED_DC, OLED_CS);
+#else
+  #include "angry_cookie_128x64_xbm.h"
+  #define OLED_WIDTH 128
+  #define OLED_HEIGHT 64
+  #include <SSD1306Wire.h>
+  SSD1306Wire oled(0x3C);
 #endif
 
 uint32_t tButton;
@@ -26,13 +44,15 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println(__FILE__);
-  
+
+  #if defined(PIN_BUTTON1)
   #ifdef _VARIANT_WAVESHARE_BLE400_
   pinMode(PIN_BUTTON1, INPUT);
   #else
   pinMode(PIN_BUTTON1, INPUT_PULLUP);
   #endif
   pinMode(PIN_BUTTON2, INPUT_PULLUP);
+  #endif
   
   oled.setScreenSize(OLED_WIDTH, OLED_HEIGHT);
   oled.init(); 
@@ -54,6 +74,7 @@ void setup()
 
 void loop()
 {
+  #if defined(PIN_BUTTON1)
   if (millis() - tButton > debounceTime_ms)
   {
     if (!digitalRead(PIN_BUTTON1))
@@ -93,6 +114,7 @@ void loop()
       tButton = millis();
     }
   }
+  #endif
   
   yield();
 }
