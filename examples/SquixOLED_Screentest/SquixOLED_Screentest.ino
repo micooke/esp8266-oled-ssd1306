@@ -2,19 +2,7 @@
 #include <Wire.h>
 #include <SPI.h>
 
-#define SH1107_EXTERNAL_CONTROL
-#if defined(_VARIANT_T28_) | defined(SH1107_EXTERNAL_CONTROL)
-  #define SFEOLED_SH1107
-#endif
-#include <SFE_MicroOLED.h>  // Include the SFE_MicroOLED library
-
-#if defined(SH1107_EXTERNAL_CONTROL)
-  #include "angry_cookie_64x32_xbm.h"
-  #define OLED_WIDTH 64
-  #define OLED_HEIGHT 128
-  #include <SSD1306Spi.h>
-  SSD1306Spi oled(8, 9, 10);
-#elif defined(_VARIANT_T28_)
+#if defined(_VARIANT_T28_)
   #include "angry_cookie_64x32_xbm.h"
   #define OLED_WIDTH 64
   #define OLED_HEIGHT 128
